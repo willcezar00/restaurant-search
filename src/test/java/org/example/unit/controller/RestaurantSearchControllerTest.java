@@ -59,11 +59,11 @@ class RestaurantSearchControllerTest {
     void search_invalidRating_returnsBadRequest() throws Exception {
         mockMvc.perform(get("/api/restaurants/search").param("customerRating", "0"))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error").value("customerRating must be between 1 and 5"));
+                .andExpect(jsonPath("$.errors[0]").value("customerRating must be between 1 and 5"));
 
         mockMvc.perform(get("/api/restaurants/search").param("customerRating", "6"))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error").exists());
+                .andExpect(jsonPath("$.errors").isArray());
     }
 
     @Test
@@ -71,7 +71,7 @@ class RestaurantSearchControllerTest {
     void search_invalidDistance_returnsBadRequest() throws Exception {
         mockMvc.perform(get("/api/restaurants/search").param("distance", "0"))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error").value("distance must be between 1.0 and 10.0 miles"));
+                .andExpect(jsonPath("$.errors[0]").value("distance must be between 1 and 10 miles"));
 
         mockMvc.perform(get("/api/restaurants/search").param("distance", "11"))
                 .andExpect(status().isBadRequest());
@@ -82,7 +82,7 @@ class RestaurantSearchControllerTest {
     void search_invalidPrice_returnsBadRequest() throws Exception {
         mockMvc.perform(get("/api/restaurants/search").param("price", "9"))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error").value("price must be between $10 and $50"));
+                .andExpect(jsonPath("$.errors[0]").value("price must be between $10 and $50"));
 
         mockMvc.perform(get("/api/restaurants/search").param("price", "51"))
                 .andExpect(status().isBadRequest());

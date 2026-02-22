@@ -39,9 +39,9 @@ public class RestaurantSearchController {
             @Parameter(description = "Cuisine (exact or partial match)") @RequestParam(value = "cuisine", required = false) String cuisine) {
 
         SearchCriteria criteria = new SearchCriteria(name, customerRating, distance, price, cuisine);
-        var error = validator.validate(criteria);
-        if (error.isPresent()) {
-            return ResponseEntity.badRequest().body(Map.of("error", error.get()));
+        List<String> errors = validator.validate(criteria);
+        if (!errors.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("errors", errors));
         }
         List<Restaurant> results = searchService.search(criteria);
         return ResponseEntity.ok(results);

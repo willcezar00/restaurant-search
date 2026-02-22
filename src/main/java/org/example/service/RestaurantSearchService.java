@@ -5,10 +5,10 @@ import org.example.domain.SearchCriteria;
 import org.example.loader.RestaurantLoader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Orchestrates restaurant search: load data, filter by criteria, sort, return top N (configurable).
@@ -17,11 +17,14 @@ import java.util.stream.Stream;
 public class RestaurantSearchService {
 
     private final RestaurantLoader loader;
+    private final RestaurantMatcher matcher;
     private final int maxResults;
 
     public RestaurantSearchService(RestaurantLoader loader,
+                                  RestaurantMatcher matcher,
                                   @Value("${restaurant.search.max-results:5}") int maxResults) {
         this.loader = loader;
+        this.matcher = matcher;
         this.maxResults = maxResults;
     }
 
@@ -30,16 +33,15 @@ public class RestaurantSearchService {
      * Restaurants with null or blank name are excluded so every result at least contains the restaurant name.
      */
     public List<Restaurant> search(SearchCriteria criteria) {
-        List<Restaurant> all = loader.loadAll();
-        Stream<Restaurant> stream = all.stream()
+        return loader.loadAll().stream()
                 .filter(RestaurantSearchService::hasName)
-                .filter(restaurant -> RestaurantMatcher.matches(restaurant, criteria));
-        List<Restaurant> matched = stream.collect(Collectors.toList());
-        List<Restaurant> sorted = RestaurantSorter.sortByBestMatch(matched);
-        return sorted.stream().limit(maxResults).collect(Collectors.toList());
+                .filter(restaurant -> matcher.matches(restaurant, criteria))
+                .sorted(RestaurantSorter.bestMatchComparator())
+                .limit(maxResults)
+                .collect(Collectors.toList());
     }
 
     private static boolean hasName(Restaurant restaurant) {
-        return restaurant.getName() != null && !restaurant.getName().isBlank();
+        return StringUtils.hasText(restaurant.getName());
     }
 }

@@ -3,6 +3,7 @@ package org.example.unit.service;
 import org.example.domain.Restaurant;
 import org.example.domain.SearchCriteria;
 import org.example.loader.RestaurantLoader;
+import org.example.service.RestaurantMatcher;
 import org.example.service.RestaurantSearchService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,7 +39,7 @@ class RestaurantSearchServiceTest {
                 restaurant("F", 5, 6, 10, "American"));
         when(loader.loadAll()).thenReturn(many);
 
-        RestaurantSearchService service = new RestaurantSearchService(loader, 5);
+        RestaurantSearchService service = new RestaurantSearchService(loader, new RestaurantMatcher(), 5);
         List<Restaurant> results = service.search(new SearchCriteria(null, null, null, null, null));
 
         assertEquals(5, results.size());
@@ -52,7 +53,7 @@ class RestaurantSearchServiceTest {
                 restaurant("High", 4, 1, 10, "American"));
         when(loader.loadAll()).thenReturn(all);
 
-        RestaurantSearchService service = new RestaurantSearchService(loader, 5);
+        RestaurantSearchService service = new RestaurantSearchService(loader, new RestaurantMatcher(), 5);
         List<Restaurant> results = service.search(new SearchCriteria(null, 4, null, null, null));
 
         assertEquals(1, results.size());
@@ -64,7 +65,7 @@ class RestaurantSearchServiceTest {
     void search_noMatches_returnsEmpty() {
         when(loader.loadAll()).thenReturn(List.of(restaurant("Only", 2, 1, 10, "American")));
 
-        RestaurantSearchService service = new RestaurantSearchService(loader, 5);
+        RestaurantSearchService service = new RestaurantSearchService(loader, new RestaurantMatcher(), 5);
         List<Restaurant> results = service.search(new SearchCriteria(null, 5, null, null, null));
 
         assertTrue(results.isEmpty());
@@ -79,7 +80,7 @@ class RestaurantSearchServiceTest {
                 restaurant("Mid", 4, 2.0, 15, "American"));
         when(loader.loadAll()).thenReturn(all);
 
-        RestaurantSearchService service = new RestaurantSearchService(loader, 5);
+        RestaurantSearchService service = new RestaurantSearchService(loader, new RestaurantMatcher(), 5);
         List<Restaurant> results = service.search(new SearchCriteria(null, null, null, null, null));
 
         assertEquals(3, results.size());
@@ -93,7 +94,7 @@ class RestaurantSearchServiceTest {
     void search_emptyLoader_returnsEmpty() {
         when(loader.loadAll()).thenReturn(List.of());
 
-        RestaurantSearchService service = new RestaurantSearchService(loader, 5);
+        RestaurantSearchService service = new RestaurantSearchService(loader, new RestaurantMatcher(), 5);
         List<Restaurant> results = service.search(new SearchCriteria(null, null, null, null, null));
 
         assertTrue(results.isEmpty());
@@ -108,7 +109,7 @@ class RestaurantSearchServiceTest {
                 restaurant("   ", 4, 1.0, 10, "American"),
                 restaurant("Valid Name", 4, 1.0, 10, "American")));
 
-        RestaurantSearchService service = new RestaurantSearchService(loader, 5);
+        RestaurantSearchService service = new RestaurantSearchService(loader, new RestaurantMatcher(), 5);
         List<Restaurant> results = service.search(new SearchCriteria(null, null, null, null, null));
 
         assertEquals(1, results.size());

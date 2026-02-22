@@ -91,6 +91,6 @@ class RestaurantSearchIntegrationTest {
     void search_invalidParam_returns400() throws Exception {
         mockMvc.perform(get("/api/restaurants/search").param("customerRating", "10"))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error").exists());
+                .andExpect(jsonPath("$.errors").isArray());
     }
 }
