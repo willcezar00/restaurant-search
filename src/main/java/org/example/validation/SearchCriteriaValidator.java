@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.stream.Stream;
+import java.util.function.Function;
 
 /**
  * Validates search criteria. Returns a list of error messages when invalid, empty list when valid.
@@ -30,6 +30,7 @@ public class SearchCriteriaValidator {
     private final double distanceMax;
     private final int priceMin;
     private final int priceMax;
+    private final List<Function<SearchCriteria, Optional<ValidationError>>> validators;
 
     public SearchCriteriaValidator(
             MessageSource messageSource,
@@ -46,6 +47,11 @@ public class SearchCriteriaValidator {
         this.distanceMax = distanceMax;
         this.priceMin = priceMin;
         this.priceMax = priceMax;
+        this.validators = List.of(
+                this::validRating,
+                this::validDistance,
+                this::validPrice
+        );
     }
 
     /**
@@ -54,10 +60,8 @@ public class SearchCriteriaValidator {
      */
     public List<String> validate(SearchCriteria criteria) {
         Locale locale = LocaleContextHolder.getLocale();
-        return Stream.of(
-                        validRating(criteria),
-                        validDistance(criteria),
-                        validPrice(criteria))
+        return validators.stream()
+                .map(v -> v.apply(criteria))
                 .flatMap(Optional::stream)
                 .map(err -> message(err.messageKey(), locale, err.args()))
                 .toList();
