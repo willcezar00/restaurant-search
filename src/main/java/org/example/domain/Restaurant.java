@@ -15,25 +15,4 @@ public record Restaurant(
         double distance,
         int price,
         String cuisine) {
-
-    /** Alias for record accessor so existing getX() callers still work. */
-    public String getName() {
-        return name;
-    }
-
-    public int getCustomerRating() {
-        return customerRating;
-    }
-
-    public double getDistance() {
-        return distance;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-
-    public String getCuisine() {
-        return cuisine;
-    }
 }

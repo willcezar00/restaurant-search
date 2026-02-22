@@ -57,7 +57,7 @@ class RestaurantSearchServiceTest {
         List<Restaurant> results = service.search(new SearchCriteria(null, 4, null, null, null));
 
         assertEquals(1, results.size());
-        assertEquals("High", results.get(0).getName());
+        assertEquals("High", results.get(0).name());
     }
 
     @Test
@@ -84,9 +84,9 @@ class RestaurantSearchServiceTest {
         List<Restaurant> results = service.search(new SearchCriteria(null, null, null, null, null));
 
         assertEquals(3, results.size());
-        assertEquals("Near", results.get(0).getName());  // distance 1 first
-        assertEquals("Mid", results.get(1).getName());   // then 2
-        assertEquals("Far", results.get(2).getName());   // then 5
+        assertEquals("Near", results.get(0).name());  // distance 1 first
+        assertEquals("Mid", results.get(1).name());   // then 2
+        assertEquals("Far", results.get(2).name());   // then 5
     }
 
     @Test
@@ -113,6 +113,6 @@ class RestaurantSearchServiceTest {
         List<Restaurant> results = service.search(new SearchCriteria(null, null, null, null, null));
 
         assertEquals(1, results.size());
-        assertEquals("Valid Name", results.get(0).getName());
+        assertEquals("Valid Name", results.get(0).name());
     }
 }

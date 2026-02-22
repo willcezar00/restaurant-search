@@ -42,6 +42,6 @@ public class RestaurantSearchService {
     }
 
     private static boolean hasName(Restaurant restaurant) {
-        return StringUtils.hasText(restaurant.getName());
+        return StringUtils.hasText(restaurant.name());
     }
 }

@@ -11,10 +11,10 @@ import java.util.Comparator;
 public final class RestaurantSorter {
 
     private static final Comparator<Restaurant> BEST_MATCH_ORDER = Comparator
-            .comparingDouble(Restaurant::getDistance)
-            .thenComparing(Comparator.comparingInt(Restaurant::getCustomerRating).reversed())
-            .thenComparingInt(Restaurant::getPrice)
-            .thenComparing(Restaurant::getName);
+            .comparingDouble(Restaurant::distance)
+            .thenComparing(Comparator.comparingInt(Restaurant::customerRating).reversed())
+            .thenComparingInt(Restaurant::price)
+            .thenComparing(Restaurant::name);
 
     private RestaurantSorter() {}
 

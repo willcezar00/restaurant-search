@@ -30,9 +30,9 @@ class RestaurantSorterTest {
                 r("Mid", 5, 3.0, 10, "A"));
         List<Restaurant> sorted = sortWithComparator(input);
 
-        assertEquals("Near", sorted.get(0).getName());
-        assertEquals("Mid", sorted.get(1).getName());
-        assertEquals("Far", sorted.get(2).getName());
+        assertEquals("Near", sorted.get(0).name());
+        assertEquals("Mid", sorted.get(1).name());
+        assertEquals("Far", sorted.get(2).name());
     }
 
     @Test
@@ -44,9 +44,9 @@ class RestaurantSorterTest {
                 r("Mid", 3, 1.0, 10, "A"));
         List<Restaurant> sorted = sortWithComparator(input);
 
-        assertEquals("High", sorted.get(0).getName());
-        assertEquals("Mid", sorted.get(1).getName());
-        assertEquals("Low", sorted.get(2).getName());
+        assertEquals("High", sorted.get(0).name());
+        assertEquals("Mid", sorted.get(1).name());
+        assertEquals("Low", sorted.get(2).name());
     }
 
     @Test
@@ -58,9 +58,9 @@ class RestaurantSorterTest {
                 r("Mid", 5, 1.0, 25, "A"));
         List<Restaurant> sorted = sortWithComparator(input);
 
-        assertEquals("Cheap", sorted.get(0).getName());
-        assertEquals("Mid", sorted.get(1).getName());
-        assertEquals("Expensive", sorted.get(2).getName());
+        assertEquals("Cheap", sorted.get(0).name());
+        assertEquals("Mid", sorted.get(1).name());
+        assertEquals("Expensive", sorted.get(2).name());
     }
 
     @Test
@@ -72,9 +72,9 @@ class RestaurantSorterTest {
                 r("Middle", 5, 1.0, 10, "A"));
         List<Restaurant> sorted = sortWithComparator(input);
 
-        assertEquals("Alpha", sorted.get(0).getName());
-        assertEquals("Middle", sorted.get(1).getName());
-        assertEquals("Zebra", sorted.get(2).getName());
+        assertEquals("Alpha", sorted.get(0).name());
+        assertEquals("Middle", sorted.get(1).name());
+        assertEquals("Zebra", sorted.get(2).name());
     }
 
     @Test
@@ -101,6 +101,6 @@ class RestaurantSorterTest {
         List<Restaurant> input = List.of(r("Only", 3, 2.0, 15, "X"));
         List<Restaurant> sorted = sortWithComparator(input);
         assertEquals(1, sorted.size());
-        assertEquals("Only", sorted.get(0).getName());
+        assertEquals("Only", sorted.get(0).name());
     }
 }
