@@ -154,4 +154,25 @@ class RestaurantMatcherTest {
         Restaurant r = restaurant("R", 4, 1.0, 10, null);
         assertFalse(matcher.matches(r, new SearchCriteria(null, null, null, null, "Chi")));
     }
+
+    @Test
+    @DisplayName("cuisine: whitespace-only search means no filter")
+    void cuisine_whitespaceOnlySearch_returnsTrue() {
+        Restaurant r = restaurant("R", 4, 1.0, 10, "Chinese");
+        assertTrue(matcher.matches(r, new SearchCriteria(null, null, null, null, "   ")));
+    }
+
+    @Test
+    @DisplayName("name: search with leading/trailing spaces is trimmed")
+    void name_searchWithSpaces_trimsBeforeMatching() {
+        Restaurant r = restaurant("McDonald's", 4, 1.0, 10, "American");
+        assertTrue(matcher.matches(r, new SearchCriteria("  mcdonald  ", null, null, null, null)));
+    }
+
+    @Test
+    @DisplayName("cuisine: search with leading/trailing spaces is trimmed")
+    void cuisine_searchWithSpaces_trimsBeforeMatching() {
+        Restaurant r = restaurant("R", 4, 1.0, 10, "Chinese");
+        assertTrue(matcher.matches(r, new SearchCriteria(null, null, null, null, "  chi  ")));
+    }
 }

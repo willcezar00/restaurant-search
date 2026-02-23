@@ -9,7 +9,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.List;
 
@@ -92,5 +91,36 @@ class RestaurantSearchIntegrationTest {
         mockMvc.perform(get("/api/restaurants/search").param("customerRating", "10"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errors").isArray());
+    }
+
+    @Test
+    @DisplayName("GET /search with combined filters narrows results")
+    void search_combinedFilters_narrowsResults() throws Exception {
+        when(loader.loadAll()).thenReturn(List.of(
+                r("Good American", 4, 2.0, 15, "American"),
+                r("Bad Chinese", 2, 1.0, 10, "Chinese"),
+                r("Far American", 4, 8.0, 15, "American")));
+
+        mockMvc.perform(get("/api/restaurants/search")
+                        .param("cuisine", "American")
+                        .param("customerRating", "3")
+                        .param("distance", "5"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].name").value("Good American"));
+    }
+
+    @Test
+    @DisplayName("GET /search enforces max 5 results limit")
+    void search_maxResults_limitsToFive() throws Exception {
+        when(loader.loadAll()).thenReturn(List.of(
+                r("A", 5, 1, 10, "X"), r("B", 5, 2, 10, "X"),
+                r("C", 5, 3, 10, "X"), r("D", 5, 4, 10, "X"),
+                r("E", 5, 5, 10, "X"), r("F", 5, 6, 10, "X"),
+                r("G", 5, 7, 10, "X")));
+
+        mockMvc.perform(get("/api/restaurants/search"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(5));
     }
 }

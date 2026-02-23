@@ -103,4 +103,34 @@ class RestaurantSorterTest {
         assertEquals(1, sorted.size());
         assertEquals("Only", sorted.get(0).name());
     }
+
+    @Test
+    @DisplayName("identical restaurants maintain stable order")
+    void bestMatchComparator_identicalRestaurants_stableOrder() {
+        Restaurant a = r("Same", 5, 1.0, 10, "A");
+        Restaurant b = r("Same", 5, 1.0, 10, "A");
+        List<Restaurant> sorted = sortWithComparator(List.of(a, b));
+
+        assertEquals(2, sorted.size());
+        assertSame(a, sorted.get(0));
+        assertSame(b, sorted.get(1));
+    }
+
+    @Test
+    @DisplayName("full 4-tier sort: distance > rating > price > name")
+    void bestMatchComparator_fullFourTierSort() {
+        List<Restaurant> input = List.of(
+                r("Zebra", 3, 2.0, 20, "A"),
+                r("Alpha", 3, 2.0, 20, "A"),
+                r("Pricey", 3, 2.0, 30, "A"),
+                r("LowRated", 2, 2.0, 10, "A"),
+                r("Close", 5, 1.0, 50, "A"));
+        List<Restaurant> sorted = sortWithComparator(input);
+
+        assertEquals("Close", sorted.get(0).name());
+        assertEquals("Alpha", sorted.get(1).name());
+        assertEquals("Zebra", sorted.get(2).name());
+        assertEquals("Pricey", sorted.get(3).name());
+        assertEquals("LowRated", sorted.get(4).name());
+    }
 }

@@ -97,4 +97,23 @@ class RestaurantSearchControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(0));
     }
+
+    @Test
+    @DisplayName("GET /search with multiple invalid params returns all errors")
+    void search_multipleInvalidParams_returnsAllErrors() throws Exception {
+        mockMvc.perform(get("/api/restaurants/search")
+                        .param("customerRating", "0")
+                        .param("distance", "0")
+                        .param("price", "9"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors").isArray())
+                .andExpect(jsonPath("$.errors.length()").value(3));
+    }
+
+    @Test
+    @DisplayName("GET /search with non-numeric param returns 400")
+    void search_nonNumericParam_returnsBadRequest() throws Exception {
+        mockMvc.perform(get("/api/restaurants/search").param("customerRating", "abc"))
+                .andExpect(status().isBadRequest());
+    }
 }

@@ -89,4 +89,29 @@ class SearchCriteriaValidatorTest {
         assertTrue(result.stream().anyMatch(s -> s.contains("distance")));
         assertTrue(result.stream().anyMatch(s -> s.contains("price")));
     }
+
+    @Test
+    @DisplayName("boundary values at exact min are valid")
+    void validate_exactMinValues_returnsEmpty() {
+        assertTrue(validator.validate(new SearchCriteria(null, 1, 1.0, 10, null)).isEmpty());
+    }
+
+    @Test
+    @DisplayName("boundary values at exact max are valid")
+    void validate_exactMaxValues_returnsEmpty() {
+        assertTrue(validator.validate(new SearchCriteria(null, 5, 10.0, 50, null)).isEmpty());
+    }
+
+    @Test
+    @DisplayName("negative values return errors")
+    void validate_negativeValues_returnsErrors() {
+        var result = validator.validate(new SearchCriteria(null, -1, -5.0, -10, null));
+        assertEquals(3, result.size());
+    }
+
+    @Test
+    @DisplayName("only string params (name and cuisine) are always valid")
+    void validate_onlyStringParams_returnsEmpty() {
+        assertTrue(validator.validate(new SearchCriteria("test", null, null, null, "American")).isEmpty());
+    }
 }

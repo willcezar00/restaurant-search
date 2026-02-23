@@ -1,0 +1,8 @@
+name,customer_rating,distance,price,cuisine_id
+Good Place,5,1.0,10,1
+bad line without enough columns
+,3,2.0,20,1
+Short,5
+Good2,4,2.0,15,1
+Bad Rating,abc,2.0,15,1
+

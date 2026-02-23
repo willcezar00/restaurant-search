@@ -1,7 +1,8 @@
 package org.example.loader;
 
 import org.example.domain.Restaurant;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -13,16 +14,24 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Loads restaurants from restaurants.csv and resolves cuisine names from cuisines.csv.
- * Format: name,customer_rating,distance,price,cuisine_id (header on first line).
+ * Loads restaurants and resolves cuisine names from CSV resources.
+ * Resources are configurable via {@code restaurant.data.*} properties and support
+ * any Spring {@link Resource} prefix: {@code classpath:}, {@code file:}, {@code https:}, etc.
  */
 @Component
 public class CsvRestaurantLoader implements RestaurantLoader {
 
-    private static final String RESTAURANTS_RESOURCE = "restaurants.csv";
-    private static final String CUISINES_RESOURCE = "cuisines.csv";
+    private final Resource restaurantsResource;
+    private final Resource cuisinesResource;
 
     private List<Restaurant> cache;
+
+    public CsvRestaurantLoader(
+            @Value("${restaurant.data.restaurants-file:classpath:restaurants.csv}") Resource restaurantsResource,
+            @Value("${restaurant.data.cuisines-file:classpath:cuisines.csv}") Resource cuisinesResource) {
+        this.restaurantsResource = restaurantsResource;
+        this.cuisinesResource = cuisinesResource;
+    }
 
     @Override
     public synchronized List<Restaurant> loadAll() {
@@ -36,7 +45,7 @@ public class CsvRestaurantLoader implements RestaurantLoader {
 
     private Map<Integer, String> loadCuisines() {
         Map<Integer, String> map = new HashMap<>();
-        try (var input = new ClassPathResource(CUISINES_RESOURCE).getInputStream();
+        try (var input = cuisinesResource.getInputStream();
              var reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8))) {
             String line;
             boolean first = true;
@@ -65,7 +74,7 @@ public class CsvRestaurantLoader implements RestaurantLoader {
 
     private List<Restaurant> parseRestaurants(Map<Integer, String> cuisines) {
         List<Restaurant> result = new ArrayList<>();
-        try (var input = new ClassPathResource(RESTAURANTS_RESOURCE).getInputStream();
+        try (var input = restaurantsResource.getInputStream();
              var reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8))) {
             String line;
             boolean first = true;

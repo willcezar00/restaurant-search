@@ -115,4 +115,37 @@ class RestaurantSearchServiceTest {
         assertEquals(1, results.size());
         assertEquals("Valid Name", results.get(0).name());
     }
+
+    @Test
+    @DisplayName("respects custom maxResults limit")
+    void search_customMaxResults_limitsCorrectly() {
+        List<Restaurant> many = List.of(
+                restaurant("A", 5, 1, 10, "American"),
+                restaurant("B", 5, 2, 10, "American"),
+                restaurant("C", 5, 3, 10, "American"),
+                restaurant("D", 5, 4, 10, "American"));
+        when(loader.loadAll()).thenReturn(many);
+
+        RestaurantSearchService service = new RestaurantSearchService(loader, new RestaurantMatcher(), 2);
+        List<Restaurant> results = service.search(new SearchCriteria(null, null, null, null, null));
+
+        assertEquals(2, results.size());
+        assertEquals("A", results.get(0).name());
+        assertEquals("B", results.get(1).name());
+    }
+
+    @Test
+    @DisplayName("returns all results when count equals maxResults")
+    void search_exactlyMaxResults_returnsAll() {
+        List<Restaurant> exact = List.of(
+                restaurant("A", 5, 1, 10, "American"),
+                restaurant("B", 5, 2, 10, "American"),
+                restaurant("C", 5, 3, 10, "American"));
+        when(loader.loadAll()).thenReturn(exact);
+
+        RestaurantSearchService service = new RestaurantSearchService(loader, new RestaurantMatcher(), 3);
+        List<Restaurant> results = service.search(new SearchCriteria(null, null, null, null, null));
+
+        assertEquals(3, results.size());
+    }
 }
