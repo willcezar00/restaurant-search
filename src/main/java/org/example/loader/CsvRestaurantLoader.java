@@ -31,7 +31,7 @@ public class CsvRestaurantLoader implements RestaurantLoader {
         }
         Map<Integer, String> cuisines = loadCuisines();
         cache = parseRestaurants(cuisines);
-        return cache;
+        return List.copyOf(cache);
     }
 
     private Map<Integer, String> loadCuisines() {
